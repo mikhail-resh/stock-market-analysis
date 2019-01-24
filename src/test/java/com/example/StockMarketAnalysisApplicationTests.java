@@ -1,6 +1,7 @@
 package com.example;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -9,7 +10,6 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,7 +43,9 @@ public class StockMarketAnalysisApplicationTests {
 				createURL("/about"),
 				HttpMethod.GET, entity, String.class);
 		
-		String expected = "{\"appName\":\""+buildProperties.getName()+"\",\"version\":\""+buildProperties.getVersion()+"\"}";
+		String appName = buildProperties.getName();
+		String appVersion = buildProperties.getVersion();
+		String expected = "{\"appName\":\""+appName+"\",\"version\":\""+appVersion+"\"}";
 		try {
 			JSONAssert.assertEquals(expected, response.getBody(), false);
 		} catch (JSONException e) {
@@ -64,17 +66,19 @@ public class StockMarketAnalysisApplicationTests {
 				HttpMethod.POST, entity, String.class);
 		
 		try {
-			org.json.JSONObject responseProfit = new org.json.JSONObject(response.getBody());
+			JSONObject responseProfit = new JSONObject(response.getBody());
 			String responseProfitAmount = responseProfit.getString("profitAmount");
 					
-			final String urlBegin = "https://api.iextrading.com/1.0/stock/";
-			final String urlCurrent = urlBegin+companyName+"/price";
+			String urlBegin = "https://api.iextrading.com/1.0/stock/";
+			
+			String urlCurrent = urlBegin+companyName+"/price";
 			String currentResult = restTemplate.getForObject(urlCurrent, String.class);	
-			final String urlYesturday = urlBegin+companyName+"/previous";
-			final String yesterdayResult = restTemplate.getForObject(urlYesturday, String.class);	
-			org.json.JSONObject yesterdayInfo = new org.json.JSONObject(yesterdayResult);
-			float yesturdayPrice = Float.valueOf(yesterdayInfo.getString("high"));
 			float currentPrice = Float.valueOf(currentResult);
+			
+			String urlYesturday = urlBegin+companyName+"/previous";
+			String yesterdayResult = restTemplate.getForObject(urlYesturday, String.class);	
+			JSONObject yesterdayInfo = new JSONObject(yesterdayResult);
+			float yesturdayPrice = Float.valueOf(yesterdayInfo.getString("high"));
 			
 			float expectedProfit = currentPrice-yesturdayPrice;
 			String expectedProfitStr = String.valueOf(expectedProfit);
