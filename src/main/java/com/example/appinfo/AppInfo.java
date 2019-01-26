@@ -1,11 +1,20 @@
 package com.example.appinfo;
 
-public class AppInfo {
 
+public class AppInfo {
+	
 	private String appName;
 	private String version;
 
-	public AppInfo(String appName, String version) {
+	private static AppInfo appInfo = null;
+	public static AppInfo getAppInfo(String name, String version) {
+		if (appInfo==null) {
+			appInfo = new AppInfo(name,version);
+		}
+		return appInfo;
+	}
+
+	private AppInfo(String appName, String version) {
 		super();
 		this.appName = appName;
 		this.version = version;

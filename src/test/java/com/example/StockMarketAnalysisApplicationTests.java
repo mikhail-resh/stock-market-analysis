@@ -45,7 +45,7 @@ public class StockMarketAnalysisApplicationTests {
 		
 		String appName = buildProperties.getName();
 		String appVersion = buildProperties.getVersion();
-		String expected = "{\"appName\":\""+appName+"\",\"version\":\""+appVersion+"\"}";
+		String expected = String.format("{\"appName\":\"%1$s\",\"version\":\"%2$s\"}",appName, appVersion);
 		try {
 			JSONAssert.assertEquals(expected, response.getBody(), false);
 		} catch (JSONException e) {
@@ -55,27 +55,25 @@ public class StockMarketAnalysisApplicationTests {
 	
 	@Test
 	public void testPOSTProfit() {
-		String companyName="NKE";
+		String companyName="nke";
 		
 		List<String> companies = new ArrayList<String>();
 		companies.add(companyName);
 		HttpEntity<List<String>> entity = new HttpEntity<List<String>>(companies, headers);
 		
 		ResponseEntity<String> response = restTemplate.exchange(
-				createURL("/maxprofits"),
-				HttpMethod.POST, entity, String.class);
+				createURL(String.format("/maxprofits/%s", companyName)),
+				HttpMethod.GET, entity, String.class);
 		
 		try {
 			JSONObject responseProfit = new JSONObject(response.getBody());
 			String responseProfitAmount = responseProfit.getString("profitAmount");
-					
-			String urlBegin = "https://api.iextrading.com/1.0/stock/";
-			
-			String urlCurrent = urlBegin+companyName+"/price";
+								
+			String urlCurrent = createTradeURL("price",companyName);
 			String currentResult = restTemplate.getForObject(urlCurrent, String.class);	
 			float currentPrice = Float.valueOf(currentResult);
 			
-			String urlYesturday = urlBegin+companyName+"/previous";
+			String urlYesturday = createTradeURL("previous",companyName);
 			String yesterdayResult = restTemplate.getForObject(urlYesturday, String.class);	
 			JSONObject yesterdayInfo = new JSONObject(yesterdayResult);
 			float yesturdayPrice = Float.valueOf(yesterdayInfo.getString("high"));
@@ -90,7 +88,12 @@ public class StockMarketAnalysisApplicationTests {
 	}
 	
  String createURL(String uri) {
-		return "http://localhost:" + port + uri;
+		return String.format("http://localhost:%1$s%2$s", port, uri);
+	}
+ 
+ String createTradeURL(String uri, String company) {
+	 String urlBegin = "https://api.iextrading.com/1.0/stock/";
+		return String.format("%1$s%2$s/%3$s", urlBegin, company, uri);
 	}
 
 }

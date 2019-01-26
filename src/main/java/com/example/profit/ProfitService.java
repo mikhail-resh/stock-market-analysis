@@ -28,7 +28,7 @@ public class ProfitService {
 			Profit profit = createProfit(company);
 			if (maxProfit==null) {
 				maxProfit=profit;
-			}else {
+			}else{
 				float maxProfitAmount = Float.valueOf(maxProfit.getProfitAmount());
 				float profitAmount = Float.valueOf(profit.getProfitAmount());
 				if (maxProfitAmount<profitAmount) maxProfit = profit;
@@ -48,10 +48,10 @@ public class ProfitService {
 	private Profit createProfit(String name) {	
 		RestTemplate restTemplate = new RestTemplate();
 		
-		final String urlCurrent = urlBegin+name+urlCurrentEnd;
+		final String urlCurrent = String.format("%1$s%2$s%3$s",urlBegin, name, urlCurrentEnd);
 		String currentResult = restTemplate.getForObject(urlCurrent, String.class);
 		
-		final String urlYesturday = urlBegin+name+urlYesterdayEnd;
+		final String urlYesturday = String.format("%1$s%2$s%3$s",urlBegin,name,urlYesterdayEnd);
 		CompanyStockYesterdayInfo yesterdayResult = restTemplate.getForObject(urlYesturday, CompanyStockYesterdayInfo.class);
 		
 		Profit profit = new Profit(name, String.valueOf(Float.valueOf(currentResult)-yesterdayResult.getHigh()));
