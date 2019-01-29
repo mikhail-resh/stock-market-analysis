@@ -1,6 +1,5 @@
 package com.example.appinfo;
 
-
 public class AppInfo {
 	
 	private String appName;
@@ -13,7 +12,6 @@ public class AppInfo {
 		}
 		return appInfo;
 	}
-
 	private AppInfo(String appName, String version) {
 		super();
 		this.appName = appName;

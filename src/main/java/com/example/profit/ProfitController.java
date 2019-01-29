@@ -12,8 +12,12 @@ import com.example.user.UserEmail;
 @RestController
 public class ProfitController {
 
+	private final ProfitService profitService;
+	
 	@Autowired
-	private ProfitService profitService;
+	public ProfitController(ProfitService profitService) {
+		this.profitService = profitService;
+	}
 	
 	@RequestMapping(value = "/maxprofits/{companies}")
 	public Profit getMaxProfit(@PathVariable List<String> companies) {

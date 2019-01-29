@@ -28,8 +28,12 @@ public class StockMarketAnalysisApplicationTests {
 	@LocalServerPort
 	private int port;
 	
-	@Autowired
 	private BuildProperties buildProperties;
+	
+	@Autowired
+	public void setBuildProperties(BuildProperties buildProperties) {
+		this.buildProperties = buildProperties;
+	}
 
 	private TestRestTemplate restTemplate = new TestRestTemplate();
 	private HttpHeaders headers = new HttpHeaders();

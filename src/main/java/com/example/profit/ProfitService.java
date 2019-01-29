@@ -17,8 +17,12 @@ public class ProfitService {
 	private final String urlYesterdayEnd = "/previous";
 	private final String urlCurrentEnd = "/price";
 	
+	private final UserService userService;
+	
 	@Autowired
-	private UserService userService;
+	public ProfitService(UserService userService) {
+		this.userService = userService;
+	}
 	
 	public Profit getMaxProfit(List<String> companies) {
 		if (companies==null || companies.isEmpty()) return null;

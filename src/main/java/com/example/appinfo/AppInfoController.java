@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppInfoController {
 	
+	private final AppInfoService appInfoService;
+	
 	@Autowired
-	AppInfoService appInfoService;
+	public AppInfoController(AppInfoService appInfoService) {
+		this.appInfoService = appInfoService;
+	}
 	
 	@RequestMapping("/about")
 	public AppInfo getAppInfo() {

@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppInfoService {
 	
-	@Autowired
-	private BuildProperties buildProperties;
+	private final BuildProperties buildProperties;
 	
+	@Autowired
+	public AppInfoService(BuildProperties buildProperties) {
+		this.buildProperties = buildProperties;
+	}
+		
 	public AppInfo getAppInfo() {
 		return AppInfo.getAppInfo(buildProperties.getName(), buildProperties.getVersion());
 	}
